@@ -24,5 +24,15 @@ namespace WPF_WyszukiwarkaOI
         {
             InitializeComponent();
         }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            //to zrobic
+        }
+
+        private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            //wyswietlanie wyszukiwania
+        }
     }
 }
