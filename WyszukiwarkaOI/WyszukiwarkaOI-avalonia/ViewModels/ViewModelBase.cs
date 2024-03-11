@@ -1,6 +1,6 @@
 ﻿using ReactiveUI;
 
-namespace WyszukiwarkaOI_avalonia.ViewModels
+namespace ViewModels
 {
     public class ViewModelBase : ReactiveObject
     {

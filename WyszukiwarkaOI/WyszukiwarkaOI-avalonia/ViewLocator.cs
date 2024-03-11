@@ -1,7 +1,7 @@
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 using System;
-using WyszukiwarkaOI_avalonia.ViewModels;
+using ViewModels;
 
 namespace WyszukiwarkaOI_avalonia
 {
