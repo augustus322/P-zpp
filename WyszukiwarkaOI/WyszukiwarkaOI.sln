@@ -5,7 +5,9 @@ VisualStudioVersion = 17.8.34316.72
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WyszukiwarkaOI-avalonia", "WyszukiwarkaOI-avalonia\WyszukiwarkaOI-avalonia.csproj", "{3C0928BE-2D47-494A-8A04-C1846A9A276C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WyszukiwarkaOI-webScraper", "WyszukiwarkaOI-webScraper\WyszukiwarkaOI-webScraper.csproj", "{312E6B5D-C654-4EFC-AC83-F15D6688271E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WyszukiwarkaOI-webScraper", "WyszukiwarkaOI-webScraper\WyszukiwarkaOI-webScraper.csproj", "{312E6B5D-C654-4EFC-AC83-F15D6688271E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AMozeWPF", "..\..\AMozeWPF\AMozeWPF\AMozeWPF.csproj", "{EDB8A5EA-BEEE-454C-A957-8B15F8101996}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{312E6B5D-C654-4EFC-AC83-F15D6688271E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{312E6B5D-C654-4EFC-AC83-F15D6688271E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{312E6B5D-C654-4EFC-AC83-F15D6688271E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EDB8A5EA-BEEE-454C-A957-8B15F8101996}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EDB8A5EA-BEEE-454C-A957-8B15F8101996}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EDB8A5EA-BEEE-454C-A957-8B15F8101996}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EDB8A5EA-BEEE-454C-A957-8B15F8101996}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
