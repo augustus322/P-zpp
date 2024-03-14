@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WyszukiwarkaOI-webScraper",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WPF-WyszukiwarkaOI", "WPF-WyszukiwarkaOI\WPF-WyszukiwarkaOI.csproj", "{50EEFC2E-28B8-43F9-88FF-6D5237901D52}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataBaseZPP", "DataBaseZPP\DataBaseZPP.csproj", "{43C62910-56AE-4C91-AEDA-48311C9E4711}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{50EEFC2E-28B8-43F9-88FF-6D5237901D52}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{50EEFC2E-28B8-43F9-88FF-6D5237901D52}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{50EEFC2E-28B8-43F9-88FF-6D5237901D52}.Release|Any CPU.Build.0 = Release|Any CPU
+		{43C62910-56AE-4C91-AEDA-48311C9E4711}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{43C62910-56AE-4C91-AEDA-48311C9E4711}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{43C62910-56AE-4C91-AEDA-48311C9E4711}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{43C62910-56AE-4C91-AEDA-48311C9E4711}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
