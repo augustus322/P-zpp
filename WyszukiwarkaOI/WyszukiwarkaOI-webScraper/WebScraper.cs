@@ -84,22 +84,21 @@ public class WebScraper
 	/// - A list of type T representing the extracted element information (or null if unsuccessful).
 	/// - A boolean indicating whether the operation was successful.
 	/// </returns>
-	public (List<T>? elementsInfo, bool isSuccess) GetElementsInfo<T>(IEnumerable<IElement> elements, Func<string, string, decimal, string, string?, T> ctor) where T : class
-	{
-		var result = new List<T>();
+	public (List<ProductModel>? elementsInfo, bool isSuccess) GetElementsInfo(IEnumerable<IElement> elements)
+    {
+        var result = new List<ProductModel>();
 
-		foreach (var product in elements)
+        foreach (var product in elements)
 		{
 			string productName = product.QuerySelector(".pB__i--name")?.TextContent ?? string.Empty;
 			string shopName = product.QuerySelector(".pB__i--shop")?.TextContent ?? string.Empty;
 			string textPrice = product.QuerySelector(".pB__i--price")?.TextContent ?? string.Empty;
-			string? productDescription = product.QuerySelector(".pB__i--desc")?.TextContent;
+            string productDescription = product.QuerySelector(".pB__i--desc")?.TextContent.Trim() ?? string.Empty;
 
-			string shopLink = product.QuerySelector("a.pB__href")?
-				.Attributes.SingleOrDefault(a => a.Name == "data-r-hash")?
-				.TextContent ?? string.Empty;
+            string shopLink = product.QuerySelector("a.pB__href")?
+               .GetAttribute("href") ?? string.Empty;
 
-			decimal price = 0;
+            decimal price = 0;
 
 			string tmp = textPrice.Substring(0, textPrice.Length - 3)
 				.Replace(',', '.').Replace(" ", "");
@@ -113,12 +112,30 @@ public class WebScraper
 				return (null, false);
 			}
 
-			T elementInfo = ctor(shopLink, productName, price, shopName, productDescription);
+            var productModel = new ProductModel
+            {
+                ProductName = productName,
+                ShopName = shopName,
+                TextPrice = textPrice,
+                ProductDescription = productDescription,
+                ShopLink = shopLink
+            };
 
-			result.Add(elementInfo);
+            result.Add(productModel);
 
-		}
-		
+        }
+
 		return (result, true);
 	}
+
+    public class ProductModel
+    {
+        public string ProductName { get; set; }
+        public string ShopName { get; set; }
+        public string TextPrice { get; set; }
+		public string ProductDescription { get; set; }
+		 public string ? ShopLink { get; set; }
+	}
+
+
 }

@@ -37,6 +37,8 @@
         <Border Grid.Column="1" Grid.Row="3" Margin="6,6,6,6" BorderBrush="White" BorderThickness="1" CornerRadius="7" >
             <Border.Effect>
                 <DropShadowEffect Color="Gray" Direction="300" ShadowDepth="2" Opacity="0.7"  />
+                
+                
 
             </Border.Effect>
             <Grid Background="White">
@@ -62,8 +64,15 @@
             <Border.Effect>
                 <DropShadowEffect Color="Gray" Direction="300" ShadowDepth="2" Opacity="0.7"  />
             </Border.Effect>
-            <DataGrid  Grid.Column="3" Grid.Row="3" HorizontalAlignment="Center" VerticalAlignment="Center"  d:ItemsSource="{d:SampleData ItemCount=}" SelectionChanged="DataGrid_SelectionChanged"/>
-            
+            <DataGrid x:Name="searchResultsDataGrid" AutoGenerateColumns="False" Margin="10,10,10,10">
+                <DataGrid.Columns >
+                    <DataGridTextColumn Header="Nazwa produktu" Binding="{Binding productName}" />
+                    <DataGridTextColumn Header="Nazwa sklepu" Binding="{Binding shopName}" />
+                    <DataGridTextColumn Header="Cena" Binding="{Binding textPrice}" />
+                    <DataGridTextColumn Header="Opis produktu" Binding="{Binding productDescription}" />
+                </DataGrid.Columns>
+            </DataGrid>
+
 
 
         </Border>
