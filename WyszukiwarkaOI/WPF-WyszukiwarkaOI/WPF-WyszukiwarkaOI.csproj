@@ -99,5 +99,15 @@
     <Folder Include="ViewModel\" />
     <Folder Include="View\" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DataBaseZPP\DataBaseZPP.csproj">
+      <Project>{43c62910-56ae-4c91-aeda-48311c9e4711}</Project>
+      <Name>DataBaseZPP</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WyszukiwarkaOI-webScraper\WyszukiwarkaOI-webScraper.csproj">
+      <Project>{312e6b5d-c654-4efc-ac83-f15d6688271e}</Project>
+      <Name>WyszukiwarkaOI-webScraper</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

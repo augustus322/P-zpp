@@ -44,19 +44,31 @@ namespace WPF_WyszukiwarkaOI
                 // Jeśli zapytanie było udane, możemy kontynuować
                 if (isSuccess)
                 {
-                    // Tutaj można dodać logikę przetwarzania otrzymanego HTML
-                    // Na razie zwrócimy HTML do konsoli dla celów diagnostycznych
-                    Console.WriteLine(html);
+                    // Przetwarzamy pobrany HTML
+                    var (elements, success) = await _webScraper.GetChildrenOfGivenElementAsync(".klasa-elementu", html); // Ustaw odpowiednią klasę elementu
 
-                    // Właściwe parsowanie danych i wyświetlanie w DataGrid należy wykonać na podstawie pobranego HTML
+                    if (success)
+                    {
+                        // Przetwarzamy elementy, uzyskujemy listę ProductModel
+                        var (elementsInfo, successParsing) = _webScraper.GetElementsInfo(elements);
 
-                    // Teraz możesz kontynuować przetwarzanie HTML w celu wydobycia potrzebnych informacji
-                    // np. możesz wywołać metodę GetElementsInfo na instancji WebScraper
-                    var elementsInfo = _webScraper.GetElementsInfo(html);
+                        if (successParsing)
+                        {
+                            
+                            // Zapisz elementsInfo do bazy danych
 
-                    // Pamiętaj, że powinieneś dostosować metodę GetElementsInfo, aby przetwarzała otrzymany HTML i zwracała potrzebne informacje
-                    // Następnie możesz przypisać te informacje do ItemsSource dla DataGrid
-                    // searchResultsDataGrid.ItemsSource = elementsInfo;
+                            // Wyświetlenie danych w DataGrid
+                            searchResultsDataGrid.ItemsSource = elementsInfo;
+                        }
+                        else
+                        {
+                            MessageBox.Show("Wystąpił problem podczas parsowania danych.");
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("Wystąpił problem podczas przetwarzania HTML.");
+                    }
                 }
                 else
                 {
@@ -71,9 +83,102 @@ namespace WPF_WyszukiwarkaOI
 
 
 
+
         private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             
+        }
+
+        private async void PriceUp(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                string searchText = wyszukiwarka.Text;
+                WebScraper _webScraper = new WebScraper();
+
+                var (html, isSuccess) = await _webScraper.GetWebsiteHtmlAsync("https://www.okazje.info.pl/search/?q=" + searchText);
+
+                if (isSuccess)
+                {
+                    var (elements, success) = await _webScraper.GetChildrenOfGivenElementAsync(".klasa-elementu", html);
+
+                    if (success)
+                    {
+                        var (elementsInfo, successParsing) = _webScraper.GetElementsInfo(elements);
+
+                        if (successParsing)
+                        {
+                            // Sortowanie danych po cenie rosnąco
+                            elementsInfo = elementsInfo.OrderBy(product => decimal.Parse(product.TextPrice.Replace(" ", "").Replace(',', '.'))).ToList();
+
+                            // Przypisz posortowane dane do DataGrid
+                            searchResultsDataGrid.ItemsSource = elementsInfo;
+                        }
+                        else
+                        {
+                            MessageBox.Show("Wystąpił problem podczas parsowania danych.");
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("Wystąpił problem podczas przetwarzania HTML.");
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Wystąpił problem podczas pobierania danych z serwera.");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Wystąpił błąd: {ex.Message}");
+            }
+        }
+
+        private void PriceDown(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                string searchText = wyszukiwarka.Text;
+                WebScraper _webScraper = new WebScraper();
+
+                var (html, isSuccess) = await _webScraper.GetWebsiteHtmlAsync("https://www.okazje.info.pl/search/?q=" + searchText);
+
+                if (isSuccess)
+                {
+                    var (elements, success) = await _webScraper.GetChildrenOfGivenElementAsync(".klasa-elementu", html);
+
+                    if (success)
+                    {
+                        var (elementsInfo, successParsing) = _webScraper.GetElementsInfo(elements);
+
+                        if (successParsing)
+                        {
+                            // Sortowanie danych po cenie rosnąco
+                            elementsInfo = elementsInfo.OrderByDescending(product => decimal.Parse(product.TextPrice.Replace(" ", "").Replace(',', '.'))).ToList();
+
+                            // Przypisz posortowane dane do DataGrid
+                            searchResultsDataGrid.ItemsSource = elementsInfo;
+                        }
+                        else
+                        {
+                            MessageBox.Show("Wystąpił problem podczas parsowania danych.");
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("Wystąpił problem podczas przetwarzania HTML.");
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Wystąpił problem podczas pobierania danych z serwera.");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Wystąpił błąd: {ex.Message}");
+            }
         }
     }
 }
