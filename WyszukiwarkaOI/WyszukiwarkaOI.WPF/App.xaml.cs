@@ -5,8 +5,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Configuration;
 using System.Data;
+using System.Net.Http;
+using System.Runtime.CompilerServices;
 using System.Windows;
 using WyszukiwarkaOI.EntityFramework;
+using WyszukiwarkaOI.EntityFramework.Models;
 using WyszukiwarkaOI_webScraper;
 
 namespace WyszukiwarkaOI.WPF;
@@ -35,6 +38,8 @@ public partial class App : Application
 
 				services.AddDbContext<AppDbContext>(options => options.UseSqlite(connectionString));
 				services.AddSingleton(new AppDbContextFactory(connectionString));
+				services.AddScoped<WebScraper, WebScraper>(); //dodane - zarejestrowany web scraper 
+				services.AddScoped<HttpClient, HttpClient>(); //dodane
 			});
 	}
 
@@ -47,7 +52,12 @@ public partial class App : Application
 
 		string url = $"{baseAddress}search/?q={searchPhrase}";
 
-		WebScraper webScraper = new WebScraper();
+		using var scope = _host.Services.CreateScope(); //dodane - pobranie scope
+
+        var services = scope.ServiceProvider; //dodane - wyciąganie samych serwisów ze scope
+		var webScraper = services.GetRequiredService<WebScraper>(); //dodane - zwrócenie jednego serwis
+
+		//WebScraper webScraper = new WebScraper();
 
 		(string? html, bool isSuccess) = await webScraper.GetWebsiteHtmlAsync(url);
 

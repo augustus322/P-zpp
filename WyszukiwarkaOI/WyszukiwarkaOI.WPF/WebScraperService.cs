@@ -1,5 +1,6 @@
 ﻿using WyszukiwarkaOI_webScraper;
-using WyszukiwarkaOI.EntityFramework;
+using WyszukiwarkaOI.EntityFramework.Models;
+
 
 namespace WyszukiwarkaOI.WPF;
 public class WebScraperService(WebScraper webScraper)

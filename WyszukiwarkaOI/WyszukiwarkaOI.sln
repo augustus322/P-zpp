@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WyszukiwarkaOI.EntityFramew
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WyszukiwarkaOI.WPF", "WyszukiwarkaOI.WPF\WyszukiwarkaOI.WPF.csproj", "{EEDE2677-A34A-4085-B105-ED677ACD84DD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Testy", "Testy\Testy.csproj", "{B38F4485-FBDE-4B4E-A411-DD3C159EBA51}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Testy", "Testy\Testy.csproj", "{B38F4485-FBDE-4B4E-A411-DD3C159EBA51}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

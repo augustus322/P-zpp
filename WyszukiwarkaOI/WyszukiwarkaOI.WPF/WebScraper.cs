@@ -1,21 +1,24 @@
 ﻿using AngleSharp;
 using AngleSharp.Dom;
 using AngleSharp.Html.Dom;
-
+using System.Diagnostics;
+using System.Net.Http;
+using WyszukiwarkaOI.EntityFramework;
+using WyszukiwarkaOI.EntityFramework.Models; 
 namespace WyszukiwarkaOI_webScraper;
 
 public class WebScraper
 {
 	private readonly  HttpClient _httpClient; //zamienione na private readonly 
-    
+    private readonly AppDbContext _dbContext; //dodane
 
-    public WebScraper()
-	{
-		_httpClient.DefaultRequestHeaders.Add("Accept", "text/html");
-		_httpClient.DefaultRequestHeaders.Add("User-Agent", "web scraper");
-	}
-
-
+    public WebScraper(AppDbContext dbContext, HttpClient httpClient)
+    {
+        _dbContext = dbContext; //dodane
+        _httpClient = httpClient; //dodane
+        _httpClient.DefaultRequestHeaders.Add("Accept", "text/html");
+        _httpClient.DefaultRequestHeaders.Add("User-Agent", "web scraper");
+    }
 
     /// <summary>
     /// Asynchronously retrieves the HTML code of a webpage.
@@ -90,6 +93,8 @@ public class WebScraper
 	/// </returns>
 	public (List<T>? elementsInfo, bool isSuccess) GetElementsInfo<T>(IEnumerable<IElement> elements, Func<string, string, decimal, string, string?, T> ctor) where T : class
 	{
+		Trace.WriteLine("work");
+
 		var result = new List<T>();
 
 		foreach (var product in elements)
@@ -121,8 +126,12 @@ public class WebScraper
 
 			result.Add(elementInfo);
 
+			_dbContext.Products.Add(new Product(shopLink, productName, price, shopName, productDescription)); //dodane 
+
 		}
 		
+		_dbContext.SaveChanges(); //dodane
+
 		return (result, true);
 	}
 }

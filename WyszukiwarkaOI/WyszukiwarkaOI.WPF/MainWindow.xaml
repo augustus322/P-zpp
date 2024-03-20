@@ -109,26 +109,6 @@
                         Background="Transparent"
                         BorderBrush="Transparent"
                         FontSize="14" />
-                
-                <Button Content="LATEST"
-                        HorizontalAlignment="Center"
-                        Grid.Row="3"
-                        VerticalAlignment="Center"
-                        FontFamily="Segoe UI"
-                        FontWeight="Bold"
-                        Background="Transparent"
-                        BorderBrush="Transparent"
-                        FontSize="14" />
-                
-                <Button Content="OLDEST"
-                        HorizontalAlignment="Center"
-                        Grid.Row="4"
-                        VerticalAlignment="Center"
-                        FontFamily="Segoe UI"
-                        FontWeight="Bold"
-                        Background="Transparent"
-                        BorderBrush="Transparent"
-                        FontSize="14" />
 
             </Grid>
         </Border>
@@ -152,13 +132,16 @@
                 
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Nazwa produktu"
-                                        Binding="{Binding productName}" />
+                                        Binding="{Binding Name}" />
                     <DataGridTextColumn Header="Nazwa sklepu"
-                                        Binding="{Binding shopName}" />
+                                        Binding="{Binding ShopName}" />
                     <DataGridTextColumn Header="Cena"
-                                        Binding="{Binding textPrice}" />
+                                        Binding="{Binding Price}" />
                     <DataGridTextColumn Header="Opis produktu"
-                                        Binding="{Binding productDescription}" />
+                                        Binding="{Binding Description}" />
+                    <DataGridTextColumn Header="Link"
+                    Binding="{Binding ShopLink}" />
+                    
                 </DataGrid.Columns>
             </DataGrid>
 
@@ -171,7 +154,7 @@
                      VerticalAlignment="Center"
                      FontFamily="Segoe UI"
                      BorderBrush="#568AEF"
-                     Click="Button_Click" />
+                     Click="Button_Click"/>
         </Border>
 
     </Grid>

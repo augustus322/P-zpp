@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using WyszukiwarkaOI.EntityFramework.Models;
 
 namespace WyszukiwarkaOI.EntityFramework;
 public class AppDbContextFactory(string dbConnectionString)
