@@ -45,50 +45,48 @@ public partial class App : Application
 
 	protected override async void OnStartup(StartupEventArgs e)
 	{
-		_host.Start();
+		//_host.Start();
 
-		string baseAddress = "http://www.okazje.info.pl/";
-		string searchPhrase = "rower"; // get that value from search bar
+		//string baseAddress = "http://www.okazje.info.pl/";
+		//string searchPhrase = "rower"; // get that value from search bar
 
-		string url = $"{baseAddress}search/?q={searchPhrase}";
+		//string url = $"{baseAddress}search/?q={searchPhrase}";
 
-		using var scope = _host.Services.CreateScope(); //dodane - pobranie scope
+		//using var scope = _host.Services.CreateScope(); //dodane - pobranie scope
 
-        var services = scope.ServiceProvider; //dodane - wyciąganie samych serwisów ze scope
-		var webScraper = services.GetRequiredService<WebScraper>(); //dodane - zwrócenie jednego serwis
+  //      var services = scope.ServiceProvider; //dodane - wyciąganie samych serwisów ze scope
+		//var webScraper = services.GetRequiredService<WebScraper>(); //dodane - zwrócenie jednego serwis
 
-		//WebScraper webScraper = new WebScraper();
+		////WebScraper webScraper = new WebScraper();
 
-		(string? html, bool isSuccess) = await webScraper.GetWebsiteHtmlAsync(url);
+		//(string? html, bool isSuccess) = await webScraper.GetWebsiteHtmlAsync(url);
 
-		if (!isSuccess)
-		{
-			return;
-		}
+		//if (!isSuccess)
+		//{
+		//	return;
+		//}
 
-		var result = await webScraper.GetChildrenOfGivenElementAsync(".productsBox", html!);
+		//var result = await webScraper.GetChildrenOfGivenElementAsync(".productsBox", html!);
 
-		if (!result.isSuccess)
-		{
-			return;
-		}
+		//if (!result.isSuccess)
+		//{
+		//	return;
+		//}
 
-		IEnumerable<AngleSharp.Dom.IElement> products = result.children!;
+		//IEnumerable<AngleSharp.Dom.IElement> products = result.children!;
 
-		Func<string, string, decimal, string, string?, Product> ctor = (p1, p2, p3, p4, p5) => new Product(p1, p2, p3, p4, p5);
+		//Func<string, string, decimal, string, string?, Product> ctor = (p1, p2, p3, p4, p5) => new Product(p1, p2, p3, p4, p5);
 
-		var scraperResult = webScraper.GetElementsInfo(products, ctor);
+		//var scraperResult = webScraper.GetElementsInfo(products, ctor);
 
-		if (!scraperResult.isSuccess)
-		{
-			return;
-		}
+		//if (!scraperResult.isSuccess)
+		//{
+		//	return;
+		//}
 
-		// add products info to database
+		//// add products info to database
 
-		Console.ReadLine();
-
-
+		//Console.ReadLine();
 		base.OnStartup(e);
 	}
 

@@ -98,7 +98,7 @@
                         FontWeight="Bold"
                         Background="Transparent"
                         BorderBrush="Transparent"
-                        FontSize="14" />
+                        FontSize="14" Click="Button_Click_1" />
                 
                 <Button Content="PRICE DOWN"
                         HorizontalAlignment="Center"
@@ -108,7 +108,7 @@
                         FontWeight="Bold"
                         Background="Transparent"
                         BorderBrush="Transparent"
-                        FontSize="14" />
+                        FontSize="14" Click="Button_Click_2" />
 
             </Grid>
         </Border>

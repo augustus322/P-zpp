@@ -80,58 +80,47 @@ public class WebScraper
 		return (children, true);
 	}
 
-	/// <summary>
-	/// Retrieves information about a collection of HTML elements.
-	/// </summary>
-	/// <typeparam name="T">The type of element information to retrieve.</typeparam>
-	/// <param name="elements">The enumerable of HTML elements to process.</param>
-	/// <param name="ctor">A delegate that constructs an instance of type T based on element properties.</param>
-	/// <returns>
-	/// A tuple containing:
-	/// - A list of type T representing the extracted element information (or null if unsuccessful).
-	/// - A boolean indicating whether the operation was successful.
-	/// </returns>
-	public (List<T>? elementsInfo, bool isSuccess) GetElementsInfo<T>(IEnumerable<IElement> elements, Func<string, string, decimal, string, string?, T> ctor) where T : class
-	{
-		Trace.WriteLine("work");
+    /// <summary>
+    /// Retrieves information about a collection of HTML elements.
+    /// </summary>
+    /// <typeparam name="T">The type of element information to retrieve.</typeparam>
+    /// <param name="elements">The enumerable of HTML elements to process.</param>
+    /// <param name="ctor">A delegate that constructs an instance of type T based on element properties.</param>
+    /// <returns>
+    /// A tuple containing:
+    /// - A list of type T representing the extracted element information (or null if unsuccessful).
+    /// - A boolean indicating whether the operation was successful.
+    /// </returns>
+    public (List<Product>? elementsInfo, bool isSuccess) GetElementsInfo<T>(IEnumerable<IElement> elements)
+    {
+        var result = new List<Product>();
 
-		var result = new List<T>();
+        foreach (var product in elements)
+        {
+            string productName = product.QuerySelector(".pB__i--name")?.TextContent ?? string.Empty;
+            string shopName = product.QuerySelector(".pB__i--shop")?.TextContent ?? string.Empty;
+            string textPrice = product.QuerySelector(".pB__i--price")?.TextContent ?? string.Empty;
+            string productDescription = product.QuerySelector(".pB__i--desc")?.TextContent ?? string.Empty;
+            string shopLink = product.QuerySelector("a.pB__href")?
+                .Attributes.SingleOrDefault(a => a.Name == "data-r-hash")?
+                .TextContent ?? string.Empty;
 
-		foreach (var product in elements)
-		{
-			string productName = product.QuerySelector(".pB__i--name")?.TextContent ?? string.Empty;
-			string shopName = product.QuerySelector(".pB__i--shop")?.TextContent ?? string.Empty;
-			string textPrice = product.QuerySelector(".pB__i--price")?.TextContent ?? string.Empty;
-			string? productDescription = product.QuerySelector(".pB__i--desc")?.TextContent;
+            decimal price = 0;
+            string tmp = textPrice.Substring(0, textPrice.Length - 3).Replace(',', '.').Replace(" ", "");
+            if (!decimal.TryParse(tmp, out price))
+            {
+                //add some error handling
 
-			string shopLink = product.QuerySelector("a.pB__href")?
-				.Attributes.SingleOrDefault(a => a.Name == "data-r-hash")?
-				.TextContent ?? string.Empty;
+                // temporary
+                return (null, false);
+            }
 
-			decimal price = 0;
+            Product scrapedProduct = new Product(shopLink, productName, price, shopName, productDescription);
+            result.Add(scrapedProduct);
+            _dbContext.Products.Add(scrapedProduct); //dodane 
 
-			string tmp = textPrice.Substring(0, textPrice.Length - 3)
-				.Replace(',', '.').Replace(" ", "");
-
-
-			if (!decimal.TryParse(tmp, out price))
-			{
-				//add some error handling
-
-				// temporary
-				return (null, false);
-			}
-
-			T elementInfo = ctor(shopLink, productName, price, shopName, productDescription);
-
-			result.Add(elementInfo);
-
-			_dbContext.Products.Add(new Product(shopLink, productName, price, shopName, productDescription)); //dodane 
-
-		}
-		
-		_dbContext.SaveChanges(); //dodane
-
-		return (result, true);
-	}
+        }
+        _dbContext.SaveChanges(); //dodane
+        return (result, true);
+    }
 }
