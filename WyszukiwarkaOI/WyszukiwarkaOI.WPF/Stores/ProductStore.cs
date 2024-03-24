@@ -1,30 +1,88 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using WyszukiwarkaOI.EntityFramework;
+﻿using System.Collections;
+using WyszukiwarkaOI.Domain.Models;
+using WyszukiwarkaOI.Domain.Services;
 
 namespace WyszukiwarkaOI.WPF.Stores;
-public class ProductStore : IEnumerable<Product>
+public class ProductStore(IDataService<Product> dataService) : IEnumerable<Product>
 {
+	private readonly IDataService<Product> _dataService = dataService;
+
 	// Lista do przechowywania produktów w pamięci (wewnętrzna)
 	private readonly List<Product> _products = new List<Product>();
 
 	// Publicznie dostępna kolekcja produktów
 	public IEnumerable<Product> Products => _products;
 
+	public event Action ProductsLoaded;
+	public event Action<Product> ProductAdded;
+	public event Action<Product> ProductUpdated;
+	public event Action<Product> ProductDeleted;
+
 	#region CRUD Operations
 
-	public void Add(Product product)
+	public async Task LoadAsync()
 	{
-		_products.Add(product);
+		IEnumerable<Product> decks = await _dataService.GetAll();
+
+		_products.Clear();
+		_products.AddRange(decks);
+
+		ProductsLoaded?.Invoke();
 	}
 
-	public void AddRange(IEnumerable<Product> products)
+	public async void Add(Product product)
 	{
-		_products.AddRange(products);
+		Product result = await _dataService.Create(product);
+
+		_products.Add(result);
+
+		ProductAdded?.Invoke(result);
+	}
+
+	public async void AddRange(IEnumerable<Product> products)
+	{
+		List<Product> result = new List<Product>();
+
+		foreach (Product product in products)
+		{
+			result.Add(await _dataService.Create(product));
+		}
+
+		_products.AddRange(result);
+	}
+
+	public async Task UpdateAsync(Product product)
+	{
+		int id = product.Id;
+
+		Product result = await _dataService.Update(id, product);
+
+		int currentIndex = _products.FindIndex(d => d.Id == id);
+
+		if (currentIndex != -1)
+		{
+			_products[currentIndex] = result;
+		}
+		else
+		{
+			_products.Add(result);
+		}
+
+		ProductUpdated?.Invoke(result);
+	}
+
+	public async Task RemoveAsync(Product product)
+	{
+		bool isDeleted = await _dataService.Delete(product.Id);
+
+		if (!isDeleted)
+		{
+			return;
+		}
+
+		_products.Remove(product);
+
+		ProductDeleted?.Invoke(product);
 	}
 
 	#endregion

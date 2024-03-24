@@ -20,7 +20,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Testy\Testy.csproj" />
     <ProjectReference Include="..\WyszukiwarkaOI-webScraper\WyszukiwarkaOI-webScraper.csproj" />
+    <ProjectReference Include="..\WyszukiwarkaOI.Domain\WyszukiwarkaOI.Domain.csproj" />
     <ProjectReference Include="..\WyszukiwarkaOI.EntityFramework\WyszukiwarkaOI.EntityFramework.csproj" />
   </ItemGroup>
 

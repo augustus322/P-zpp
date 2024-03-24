@@ -6,9 +6,12 @@ namespace WyszukiwarkaOI_webScraper;
 
 public class WebScraper
 {
-	private static HttpClient _httpClient = new HttpClient();
-	public WebScraper()
+	private readonly HttpClient _httpClient;
+
+	public WebScraper(HttpClient httpClient)
 	{
+		_httpClient = httpClient;
+
 		_httpClient.DefaultRequestHeaders.Add("Accept", "text/html");
 		_httpClient.DefaultRequestHeaders.Add("User-Agent", "web scraper");
 	}
@@ -118,7 +121,7 @@ public class WebScraper
 			result.Add(elementInfo);
 
 		}
-		
+
 		return (result, true);
 	}
 }

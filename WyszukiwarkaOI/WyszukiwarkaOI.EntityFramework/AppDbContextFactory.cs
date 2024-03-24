@@ -1,14 +1,15 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
 namespace WyszukiwarkaOI.EntityFramework;
-public class AppDbContextFactory(string dbConnectionString)
+public class AppDbContextFactory(Action<DbContextOptionsBuilder> configureDbContext)
 {
-	private readonly string _dbConnectionString = dbConnectionString;
+	private readonly Action<DbContextOptionsBuilder> _configureDbContext = configureDbContext;
 
 	public AppDbContext CreateDbContext()
 	{
 		var options = new DbContextOptionsBuilder<AppDbContext>();
-		options.UseSqlite(_dbConnectionString);
+
+		_configureDbContext(options);
 
 		return new AppDbContext(options.Options);
 	}

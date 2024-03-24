@@ -4,8 +4,12 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WyszukiwarkaOI.WPF"
+        xmlns:viewmodels="clr-namespace:WyszukiwarkaOI.WPF.ViewModels"
+        d:DataContext="{d:DesignInstance Type=viewmodels:MainWindowViewModel}"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow"
+        Height="450"
+        Width="800">
     <Grid Background="#EBEBEB">
         <Grid.RowDefinitions>
             <RowDefinition Height="24*" />
@@ -23,7 +27,7 @@
             <ColumnDefinition Width="590*" />
             <ColumnDefinition Width="54*" />
         </Grid.ColumnDefinitions>
-        
+
         <Label Grid.Column="0"
                Grid.ColumnSpan="3"
                Content="SHOPSKAN"
@@ -48,10 +52,13 @@
                                   ShadowDepth="5"
                                   Opacity="0.8" />
             </Border.Effect>
+
+            <!--Search Bar-->
             <TextBox Name="wyszukiwarka"
                      Margin="3,3,3,3"
                      FontSize="18"
-                     FontFamily="Segoe UI"></TextBox>
+                     FontFamily="Segoe UI"
+                     Text="{Binding SearchPhrase, UpdateSourceTrigger=PropertyChanged}" />
 
         </Border>
 
@@ -68,7 +75,7 @@
                                   Opacity="0.7" />
 
             </Border.Effect>
-            
+
             <Grid Background="White">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="35*" />
@@ -79,7 +86,7 @@
                     <RowDefinition Height="35*" />
                     <RowDefinition Height="35" />
                 </Grid.RowDefinitions>
-                
+
                 <TextBlock  Grid.Row="0"
                             Grid.Column="0"
                             HorizontalAlignment="Center"
@@ -89,7 +96,7 @@
                             FontFamily="Segoe UI"
                             FontWeight="Bold"
                             FontSize="14" />
-                
+
                 <Button Content="PRICE UP"
                         HorizontalAlignment="Center"
                         Grid.Row="1"
@@ -98,8 +105,9 @@
                         FontWeight="Bold"
                         Background="Transparent"
                         BorderBrush="Transparent"
-                        FontSize="14" />
-                
+                        FontSize="14"
+                        Click="Button_Click_1" />
+
                 <Button Content="PRICE DOWN"
                         HorizontalAlignment="Center"
                         Grid.Row="2"
@@ -108,27 +116,8 @@
                         FontWeight="Bold"
                         Background="Transparent"
                         BorderBrush="Transparent"
-                        FontSize="14" />
-                
-                <Button Content="LATEST"
-                        HorizontalAlignment="Center"
-                        Grid.Row="3"
-                        VerticalAlignment="Center"
-                        FontFamily="Segoe UI"
-                        FontWeight="Bold"
-                        Background="Transparent"
-                        BorderBrush="Transparent"
-                        FontSize="14" />
-                
-                <Button Content="OLDEST"
-                        HorizontalAlignment="Center"
-                        Grid.Row="4"
-                        VerticalAlignment="Center"
-                        FontFamily="Segoe UI"
-                        FontWeight="Bold"
-                        Background="Transparent"
-                        BorderBrush="Transparent"
-                        FontSize="14" />
+                        FontSize="14"
+                        Click="Button_Click_2" />
 
             </Grid>
         </Border>
@@ -138,32 +127,37 @@
                 Background="White"
                 Margin="9,14,5,0"
                 CornerRadius="7">
-            
+
             <Border.Effect>
                 <DropShadowEffect Color="Gray"
                                   Direction="300"
                                   ShadowDepth="2"
                                   Opacity="0.7" />
             </Border.Effect>
-            
+
+            <!--Search Result Data Grid-->
             <DataGrid x:Name="searchResultsDataGrid"
                       AutoGenerateColumns="False"
-                      Margin="10,10,10,10">
-                
+                      Margin="10,10,10,10"
+                      ItemsSource="{Binding Products}">
+
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Nazwa produktu"
-                                        Binding="{Binding productName}" />
+                                        Binding="{Binding Name}" />
                     <DataGridTextColumn Header="Nazwa sklepu"
-                                        Binding="{Binding shopName}" />
+                                        Binding="{Binding ShopName}" />
                     <DataGridTextColumn Header="Cena"
-                                        Binding="{Binding textPrice}" />
+                                        Binding="{Binding Price}" />
                     <DataGridTextColumn Header="Opis produktu"
-                                        Binding="{Binding productDescription}" />
+                                        Binding="{Binding Description}" />
+                    <DataGridTextColumn Header="Link"
+                                        Binding="{Binding ShopLink}" />
+
                 </DataGrid.Columns>
             </DataGrid>
 
         </Border>
-        
+
         <Border Grid.Column="4"
                 Grid.Row="1">
             <Button  Content="Search"
@@ -171,7 +165,7 @@
                      VerticalAlignment="Center"
                      FontFamily="Segoe UI"
                      BorderBrush="#568AEF"
-                     Click="Button_Click" />
+                     Command="{Binding RunWebScraperServiceCommand}" />
         </Border>
 
     </Grid>

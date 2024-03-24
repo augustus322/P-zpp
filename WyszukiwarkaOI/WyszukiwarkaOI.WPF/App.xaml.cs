@@ -1,13 +1,17 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System.Configuration;
-using System.Data;
+using System.Net.Http;
 using System.Windows;
+using WyszukiwarkaOI.Domain.Models;
+using WyszukiwarkaOI.Domain.Services;
 using WyszukiwarkaOI.EntityFramework;
+using WyszukiwarkaOI.EntityFramework.Services;
+using WyszukiwarkaOI.WPF.Stores;
+using WyszukiwarkaOI.WPF.ViewModels;
 using WyszukiwarkaOI_webScraper;
+using WyszukiwarkaOI_webScraper.Services;
 
 namespace WyszukiwarkaOI.WPF;
 /// <summary>
@@ -17,10 +21,10 @@ public partial class App : Application
 {
 	private readonly IHost _host;
 
-    public App()
-    {
-        _host = CreateHostBuilder().Build();
-    }
+	public App()
+	{
+		_host = CreateHostBuilder().Build();
+	}
 
 	public static IHostBuilder CreateHostBuilder(string[]? args = null)
 	{
@@ -33,8 +37,38 @@ public partial class App : Application
 			{
 				string connectionString = context.Configuration.GetConnectionString("Default")!;
 
-				services.AddDbContext<AppDbContext>(options => options.UseSqlite(connectionString));
-				services.AddSingleton(new AppDbContextFactory(connectionString));
+				//services.AddSingleton<DbConnection, SqliteConnection>(services =>
+				//{
+				//	var connection = new SqliteConnection(connectionString);
+				//	connection.Open();
+
+				//	return connection;
+				//});
+
+				//            services.AddDbContext<AppDbContext>((services, options) =>
+				//{
+				//	var connection = services.GetRequiredService<DbConnection>();
+				//	options.UseSqlite(connection);
+				//});
+
+				Action<DbContextOptionsBuilder> configureDbContext = options => options.UseSqlite(connectionString);
+
+				services.AddDbContext<AppDbContext>(configureDbContext);
+				services.AddSingleton(new AppDbContextFactory(configureDbContext));
+
+				services.AddSingleton<WebScraper>();
+				services.AddSingleton<WebScraperService>();
+				services.AddSingleton<HttpClient>();
+
+				services.AddSingleton<IDataService<Product>, DataService<Product>>();
+
+				services.AddSingleton<ProductStore>();
+
+				services.AddSingleton<MainWindowViewModel>();
+
+				services.AddSingleton(services =>
+					new MainWindow(services.GetRequiredService<MainWindowViewModel>())
+				);
 			});
 	}
 
@@ -42,42 +76,14 @@ public partial class App : Application
 	{
 		_host.Start();
 
-		string baseAddress = "http://www.okazje.info.pl/";
-		string searchPhrase = "rower"; // get that value from search bar
-
-		string url = $"{baseAddress}search/?q={searchPhrase}";
-
-		WebScraper webScraper = new WebScraper();
-
-		(string? html, bool isSuccess) = await webScraper.GetWebsiteHtmlAsync(url);
-
-		if (!isSuccess)
+		AppDbContextFactory contextFactory = _host.Services.GetRequiredService<AppDbContextFactory>();
+		using (AppDbContext context = contextFactory.CreateDbContext())
 		{
-			return;
+			context.Database.Migrate();
 		}
 
-		var result = await webScraper.GetChildrenOfGivenElementAsync(".productsBox", html!);
-
-		if (!result.isSuccess)
-		{
-			return;
-		}
-
-		IEnumerable<AngleSharp.Dom.IElement> products = result.children!;
-
-		Func<string, string, decimal, string, string?, Product> ctor = (p1, p2, p3, p4, p5) => new Product(p1, p2, p3, p4, p5);
-
-		var scraperResult = webScraper.GetElementsInfo(products, ctor);
-
-		if (!scraperResult.isSuccess)
-		{
-			return;
-		}
-
-		// add products info to database
-
-		Console.ReadLine();
-
+		Window window = _host.Services.GetRequiredService<MainWindow>();
+		window.Show();
 
 		base.OnStartup(e);
 	}

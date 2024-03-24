@@ -1,12 +1,12 @@
-﻿using WyszukiwarkaOI_webScraper;
-using WyszukiwarkaOI.EntityFramework;
+﻿using WyszukiwarkaOI.Domain.Models;
 
-namespace WyszukiwarkaOI.WPF;
+namespace WyszukiwarkaOI_webScraper.Services;
+
 public class WebScraperService(WebScraper webScraper)
 {
 	private readonly WebScraper _webScraper = webScraper;
 
-	public async Task<List<Product>> GetElementsInfo(string url)
+	public async Task<List<Product>> GetElementsInfoAsync(string url)
 	{
 		string parentCssSelector = ".productsBox";
 
@@ -21,8 +21,16 @@ public class WebScraperService(WebScraper webScraper)
 			return new Product(p1, p2, p3, p4, p5);
 		};
 
-		var scraperResult = _webScraper.GetElementsInfo(products, ctor);
+		var (scraperResult, success) = _webScraper.GetElementsInfo(products, ctor);
 
-		return scraperResult.elementsInfo!;
+		List<Product> elementsInfo = scraperResult ?? new List<Product>();
+		return elementsInfo;
+
+		//if (!scraperResult.isSuccess)
+		//{
+		//    return;
+		//}
+
+		//return new List<Product>();
 	}
 }
