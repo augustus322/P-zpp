@@ -1,4 +1,7 @@
-﻿using AngleSharp.Dom;
+﻿using AngleSharp;
+using AngleSharp.Dom;
+using AngleSharp.Html.Dom;
+using System.Reflection.Metadata;
 using WyszukiwarkaOI.Domain.Models;
 using WyszukiwarkaOI_webScraper;
 
@@ -13,21 +16,18 @@ namespace Testy
         [Fact]
         public async void GetHtmlTest()
         {
-            var t1 = scraper.GetWebsiteHtmlAsync(url).Result.isSuccess;
+            var test = scraper.GetWebsiteHtmlAsync(url).Result.isSuccess;
 
-            Assert.True(t1);
+            Assert.True(test);
         }
 
         [Fact]
         public async void GetChildrenTest()
         {
-            //var html = @"<div class=""productsBox"">
-	           //             <div class=""pB--cr""></div>
-            //            </div>";
             var css = ".productsBox";
-            var t2 = scraper.GetChildrenOfGivenElementAsync(css, testHtml).Result.isSuccess;
+            var test = scraper.GetChildrenOfGivenElementAsync(css, testHtml).Result.isSuccess;
 
-            Assert.True(t2);
+            Assert.True(test);
         }
 
         [Fact]
@@ -39,10 +39,15 @@ namespace Testy
             };
 
             var css = ".productsBox";
-            var t3 = scraper.GetChildrenOfGivenElementAsync(css, testHtml).Result.children;
-            var t4 = scraper.GetElementsInfo(t3,ctor).isSuccess;
 
-            Assert.True(t4);
+            IBrowsingContext context = BrowsingContext.New(Configuration.Default);
+            IDocument document = await context.OpenAsync(req => req.Content(testHtml));
+            IElement? parentElement = document.QuerySelector(css);
+            IEnumerable<IElement> children = parentElement.Children.Where(c => c is IHtmlDivElement);
+
+            var test = scraper.GetElementsInfo(children,ctor).isSuccess;
+            
+            Assert.True(test);
         }
 
 
