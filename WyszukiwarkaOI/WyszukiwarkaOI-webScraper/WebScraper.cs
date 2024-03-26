@@ -124,4 +124,32 @@ public class WebScraper
 
 		return (result, true);
 	}
+
+	public async Task<(int? nextPageNumber, bool isSuccess)> GetNextPageNumberAsync(string html)
+	{
+		using IBrowsingContext context = BrowsingContext.New(Configuration.Default);
+
+		IDocument document = await context.OpenAsync(req => req.Content(html));
+		var anchorElements = document.QuerySelectorAll<IHtmlAnchorElement>(".pageArrow");
+		var nextPageAnchor = anchorElements.FirstOrDefault(a => a.Title == "Następna");
+
+		// to znaczy, że nie ma już następnej strony
+		if (nextPageAnchor is null)
+		{
+			return (null, false);
+		}
+
+		string tmp = nextPageAnchor
+			.Attributes.SingleOrDefault(a => a.Name == "data-page")?
+			.TextContent ?? string.Empty;
+
+		int nextPageNumber;
+
+		if (!int.TryParse(tmp, out nextPageNumber))
+		{
+			return (null, false);
+		}
+
+		return (nextPageNumber, true);
+	}
 }

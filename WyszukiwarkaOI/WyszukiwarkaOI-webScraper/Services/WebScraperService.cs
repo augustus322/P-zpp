@@ -8,6 +8,22 @@ public class WebScraperService(WebScraper webScraper)
 
 	public async Task<List<Product>> GetElementsInfoAsync(string url)
 	{
+		(List<Product> result, string _) = await RunWebScraper(url);
+
+		return result;
+	}
+
+	public async Task<(IEnumerable<Product> results, int? nextPageNumber)> GetElementsInfoWithPaginationAsync(string url)
+	{
+		(List<Product> result, string html) = await RunWebScraper(url);
+
+		var getNextPageNumberResult = await _webScraper.GetNextPageNumberAsync(html);
+
+		return (result, getNextPageNumberResult.nextPageNumber);
+	}
+
+	private async Task<(List<Product> results, string html)> RunWebScraper(string url)
+	{
 		string parentCssSelector = ".productsBox";
 
 		var getHtmlResult = await _webScraper.GetWebsiteHtmlAsync(url);
@@ -24,13 +40,6 @@ public class WebScraperService(WebScraper webScraper)
 		var (scraperResult, success) = _webScraper.GetElementsInfo(products, ctor);
 
 		List<Product> elementsInfo = scraperResult ?? new List<Product>();
-		return elementsInfo;
-
-		//if (!scraperResult.isSuccess)
-		//{
-		//    return;
-		//}
-
-		//return new List<Product>();
+		return (elementsInfo, getHtmlResult.html!);
 	}
 }

@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using System.Collections.ObjectModel;
 using WyszukiwarkaOI.Domain.Models;
 using WyszukiwarkaOI.WPF.Stores;
 using WyszukiwarkaOI_webScraper.Services;
@@ -16,7 +17,11 @@ public partial class MainWindowViewModel : ObservableObject
 	public bool CanRunWebScraperService => !string.IsNullOrEmpty(SearchPhrase);
 
 	[ObservableProperty]
-	private List<Product> _products = new List<Product>();
+	private ObservableCollection<Product> _products = new ObservableCollection<Product>();
+
+	[ObservableProperty]
+	private string _resultNumberText = string.Empty;
+	private int _resultNumber = 0;
 
 	public MainWindowViewModel(WebScraperService webScraperService, ProductStore productStore)
 	{
@@ -27,16 +32,42 @@ public partial class MainWindowViewModel : ObservableObject
 	[RelayCommand/*(CanExecute = nameof(CanRunWebScraperService))*/]
 	private async Task RunWebScraperService()
 	{
+		const int maxPages = 3;
+
 		string baseAddress = "http://www.okazje.info.pl/";
 		int pageNumber = 0;
 
-		string websiteUrl = BuildWebsiteUrl(baseAddress, pageNumber, SearchPhrase);
+		IEnumerable<Product> results;
+		int? nextPageNumber;
 
-		List<Product> products = await _webScraperService.GetElementsInfoAsync(websiteUrl);
+		Products.Clear();
+		ResultNumberText = string.Empty;
+		_resultNumber = 0;
 
-		_productStore.AddRange(products);
+		do
+		{
+			string websiteUrl = BuildWebsiteUrl(baseAddress, pageNumber, SearchPhrase);
 
-		Products = products;
+			(results, nextPageNumber) = await _webScraperService.GetElementsInfoWithPaginationAsync(websiteUrl);
+
+			_productStore.AddRange(results);
+
+			foreach (var item in results)
+			{
+				Products.Add(item);
+			}
+
+			_resultNumber += results.Count();
+			ResultNumberText = $"Results: {_resultNumber}";
+
+			if (nextPageNumber is null)
+			{
+				break;
+			}
+
+			pageNumber = (int)nextPageNumber;
+
+		} while (nextPageNumber < maxPages);
 	}
 
 	private string BuildWebsiteUrl(string baseAddress, int pageNumber, string searchPhrase)

@@ -119,6 +119,16 @@
                         FontSize="14"
                         Click="Button_Click_2" />
 
+                <TextBlock Grid.Row="4"
+                           Grid.Column="0"
+                           Text="{Binding ResultNumberText, FallbackValue='Results: 0'}"
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Center"
+                           FontFamily="Segoe UI"
+                           FontWeight="Bold"
+                           FontSize="14"
+                           TextWrapping="Wrap"/>
+
             </Grid>
         </Border>
 
