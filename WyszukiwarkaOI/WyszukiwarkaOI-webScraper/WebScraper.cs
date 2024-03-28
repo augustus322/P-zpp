@@ -60,6 +60,11 @@ public class WebScraper
 	/// </returns>
 	public async Task<(IEnumerable<IElement>? children, bool isSuccess)> GetChildrenOfGivenElementAsync(string cssSelector, string html)
 	{
+		if(cssSelector is null)
+		{
+            return (null, false);
+        }
+
 		IBrowsingContext context = BrowsingContext.New(Configuration.Default);
 
 		IDocument document = await context.OpenAsync(req => req.Content(html));

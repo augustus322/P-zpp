@@ -14,7 +14,7 @@ namespace Testy
         public string url = "https://www.okazje.info.pl/search/?q=rower";
 
         [Fact]
-        public async void GetHtmlTest()
+        public async void GetWebsiteHtmlAsync_isSuccess_True()
         {
             var test = scraper.GetWebsiteHtmlAsync(url).Result.isSuccess;
 
@@ -22,7 +22,7 @@ namespace Testy
         }
 
         [Fact]
-        public async void GetChildrenTest()
+        public async void GetChildrenOfGivenElementAsync_isSuccess_True()
         {
             var css = ".productsBox";
             var test = scraper.GetChildrenOfGivenElementAsync(css, testHtml).Result.isSuccess;
@@ -31,7 +31,25 @@ namespace Testy
         }
 
         [Fact]
-        public async void GetElementsInfoTest()
+        public async void GetChildrenOfGivenElementAsync_HtmlIsEmpty_False()
+        {
+            var css = ".productsBox";
+            var test = scraper.GetChildrenOfGivenElementAsync(css, "").Result.isSuccess;
+
+            Assert.False(test);
+        }
+
+        [Fact]
+        public async void GetChildrenOfGivenElementAsync_CssSelectorIsNull_False()
+        {
+            var css = ".productsBox";
+            var test = scraper.GetChildrenOfGivenElementAsync(null, testHtml).Result.isSuccess;
+
+            Assert.False(test);
+        }
+
+        [Fact]
+        public async void GetElementsInfo_isSuccess_True()
         {
             Func<string, string, decimal, string, string?, Product> ctor = (p1, p2, p3, p4, p5) =>
             {
