@@ -1,8 +1,26 @@
 ﻿<Application x:Class="WyszukiwarkaOI.WPF.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:viewmodels="clr-namespace:WyszukiwarkaOI.WPF.ViewModels"
+             xmlns:views="clr-namespace:WyszukiwarkaOI.WPF.Views"
              xmlns:local="clr-namespace:WyszukiwarkaOI.WPF">
     <Application.Resources>
+
+        <ResourceDictionary>
+
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Styles/Common.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <DataTemplate DataType="{x:Type viewmodels:ProductListingViewModel}">
+                <views:ProductListingView />
+            </DataTemplate>
+
+            <DataTemplate DataType="{x:Type viewmodels:ProductDetailViewModel}">
+                <views:ProductDetailsView />
+            </DataTemplate>
+
+        </ResourceDictionary>
 
     </Application.Resources>
 </Application>

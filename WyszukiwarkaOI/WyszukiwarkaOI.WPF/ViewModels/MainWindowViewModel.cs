@@ -1,77 +1,30 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
-using System.Collections.ObjectModel;
-using WyszukiwarkaOI.Domain.Models;
-using WyszukiwarkaOI.WPF.Stores;
-using WyszukiwarkaOI_webScraper.Services;
+﻿using CommunityToolkit.Mvvm.Input;
+using WyszukiwarkaOI.WPF.Navigators;
+using WyszukiwarkaOI.WPF.ViewModels.Factories;
 
 namespace WyszukiwarkaOI.WPF.ViewModels;
-public partial class MainWindowViewModel : ObservableObject
+public partial class MainWindowViewModel : ViewModelBase
 {
-	private readonly WebScraperService _webScraperService;
-	private readonly ProductStore _productStore;
+	private readonly IViewModelFactory _viewModelFactory;
 
-	[ObservableProperty]
-	[NotifyPropertyChangedFor(nameof(CanRunWebScraperService))]
-	private string _searchPhrase = "";
-	public bool CanRunWebScraperService => !string.IsNullOrEmpty(SearchPhrase);
-
-	[ObservableProperty]
-	private ObservableCollection<Product> _products = new ObservableCollection<Product>();
-
-	[ObservableProperty]
-	private string _resultNumberText = string.Empty;
-	private int _resultNumber = 0;
-
-	public MainWindowViewModel(WebScraperService webScraperService, ProductStore productStore)
+	public MainWindowViewModel(IViewModelFactory viewModelFactory,
+		INavigator navigator)
 	{
-		_webScraperService = webScraperService;
-		_productStore = productStore;
+		_viewModelFactory = viewModelFactory;
+		Navigator = navigator;
+
+		UpdateCurrentViewModel(ViewType.ProductListing);
 	}
 
-	[RelayCommand/*(CanExecute = nameof(CanRunWebScraperService))*/]
-	private async Task RunWebScraperService()
+	public INavigator Navigator { get; set; }
+
+	[RelayCommand]
+	private void UpdateCurrentViewModel(object? parameter)
 	{
-		const int maxPages = 3;
-
-		string baseAddress = "http://www.okazje.info.pl/";
-		int pageNumber = 0;
-
-		IEnumerable<Product> results;
-		int? nextPageNumber;
-
-		Products.Clear();
-		ResultNumberText = string.Empty;
-		_resultNumber = 0;
-
-		do
-		{
-			string websiteUrl = BuildWebsiteUrl(baseAddress, pageNumber, SearchPhrase);
-
-			(results, nextPageNumber) = await _webScraperService.GetElementsInfoWithPaginationAsync(websiteUrl);
-
-			_productStore.AddRange(results);
-
-			foreach (var item in results)
-			{
-				Products.Add(item);
-			}
-
-			_resultNumber += results.Count();
-			ResultNumberText = $"Results: {_resultNumber}";
-
-			if (nextPageNumber is null)
-			{
-				break;
-			}
-
-			pageNumber = (int)nextPageNumber;
-
-		} while (nextPageNumber < maxPages);
-	}
-
-	private string BuildWebsiteUrl(string baseAddress, int pageNumber, string searchPhrase)
-	{
-		return $"{baseAddress}search/?page={pageNumber}&q={searchPhrase}";
-	}
+        if (parameter is ViewType viewType)
+        {
+			Navigator.CurrentViewModel?.Dispose();
+			Navigator.CurrentViewModel = _viewModelFactory.CreateViewModel(viewType);
+        }
+    }
 }

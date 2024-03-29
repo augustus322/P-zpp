@@ -8,8 +8,11 @@ using WyszukiwarkaOI.Domain.Models;
 using WyszukiwarkaOI.Domain.Services;
 using WyszukiwarkaOI.EntityFramework;
 using WyszukiwarkaOI.EntityFramework.Services;
+using WyszukiwarkaOI.WPF.Navigators;
 using WyszukiwarkaOI.WPF.Stores;
 using WyszukiwarkaOI.WPF.ViewModels;
+using WyszukiwarkaOI.WPF.ViewModels.Delegates;
+using WyszukiwarkaOI.WPF.ViewModels.Factories;
 using WyszukiwarkaOI_webScraper;
 using WyszukiwarkaOI_webScraper.Services;
 
@@ -37,32 +40,63 @@ public partial class App : Application
 			{
 				string connectionString = context.Configuration.GetConnectionString("Default")!;
 
-				//services.AddSingleton<DbConnection, SqliteConnection>(services =>
-				//{
-				//	var connection = new SqliteConnection(connectionString);
-				//	connection.Open();
+				#region Services
 
-				//	return connection;
-				//});
+				services.AddSingleton<WebScraper>();
+				services.AddSingleton<WebScraperService>();
+				services.AddSingleton<IDataService<Product>, DataService<Product>>();
 
-				//            services.AddDbContext<AppDbContext>((services, options) =>
-				//{
-				//	var connection = services.GetRequiredService<DbConnection>();
-				//	options.UseSqlite(connection);
-				//});
+				#endregion
+
+				#region Create View Model Delegates
+
+				services.AddSingleton<CreateViewModel<ProductDetailViewModel>>(services =>
+				{
+					return () => new ProductDetailViewModel(
+						services.GetRequiredService<ViewModelDelegateRenavigator<ProductDetailViewModel>>(),
+						services.GetRequiredService<ViewModelDelegateRenavigator<ProductListingViewModel>>()
+						);
+				});
+
+				services.AddSingleton<CreateViewModel<ProductListingViewModel>>(services =>
+				{
+					return () => services.GetRequiredService<ProductListingViewModel>();
+				});
+
+				#endregion
+
+				#region Renavigators
+
+				services.AddSingleton<ViewModelDelegateRenavigator<ProductDetailViewModel>>();
+				services.AddSingleton<ViewModelDelegateRenavigator<ProductListingViewModel>>();
+
+				#endregion
+
+				#region Stores
+
+				services.AddSingleton<ProductStore>();
+
+				#endregion
+
+				#region Database Related
 
 				Action<DbContextOptionsBuilder> configureDbContext = options => options.UseSqlite(connectionString);
 
 				services.AddDbContext<AppDbContext>(configureDbContext);
 				services.AddSingleton(new AppDbContextFactory(configureDbContext));
 
-				services.AddSingleton<WebScraper>();
-				services.AddSingleton<WebScraperService>();
+				#endregion
+
 				services.AddSingleton<HttpClient>();
 
-				services.AddSingleton<IDataService<Product>, DataService<Product>>();
+				services.AddSingleton<IViewModelFactory, ViewModelFactory>();
 
-				services.AddSingleton<ProductStore>();
+				services.AddSingleton<ProductListingViewModel>(services => new ProductListingViewModel(
+					services.GetRequiredService<WebScraperService>(),
+					   services.GetRequiredService<ProductStore>(),
+					   services.GetRequiredService<ViewModelDelegateRenavigator<ProductDetailViewModel>>()));
+
+				services.AddSingleton<INavigator, Navigator>();
 
 				services.AddSingleton<MainWindowViewModel>();
 

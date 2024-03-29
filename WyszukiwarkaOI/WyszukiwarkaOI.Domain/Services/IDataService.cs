@@ -11,4 +11,6 @@ public interface IDataService<T>
 	Task<T> Update(int id, T entity);
 
 	Task<bool> Delete(int id);
+
+	IEnumerable<T> Get(Func<T, bool> predicate);
 }
