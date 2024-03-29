@@ -22,10 +22,23 @@ public class ProductStore(IDataService<Product> dataService) : IEnumerable<Produ
 
 	public async Task LoadAsync()
 	{
-		IEnumerable<Product> decks = await _dataService.GetAll();
+		IEnumerable<Product> products = await _dataService.GetAll();
 
 		_products.Clear();
-		_products.AddRange(decks);
+		_products.AddRange(products);
+
+		ProductsLoaded?.Invoke();
+	}
+
+	public async Task LoadAsync(string searchPhrase)
+	{
+		IEnumerable<Product> products = _dataService.Get(p => p.Name.ToLower().Contains(searchPhrase));
+		//var func = () => _dataService.Get(p => p.Name.ToLower().Contains(searchPhrase));
+
+		//IEnumerable<Product> products = await Task.Run<IEnumerable<Product>>(func);
+
+		_products.Clear();
+		_products.AddRange(products);
 
 		ProductsLoaded?.Invoke();
 	}
