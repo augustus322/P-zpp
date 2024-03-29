@@ -148,12 +148,21 @@
             <!--Search Result Data Grid-->
             <DataGrid x:Name="searchResultsDataGrid"
                       AutoGenerateColumns="False"
-                      Margin="10,10,10,10"
+                      Margin="2,10,18,10"
                       ItemsSource="{Binding Products}">
 
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Nazwa produktu"
-                                        Binding="{Binding Name}" />
+                    <DataGridTemplateColumn Header="Nazwa produktu">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button Click="OpenShopPage" Content="{Binding Name}" CommandParameter="{Binding ShopLink}"></Button>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    
+                    <!--<DataGridTextColumn Header="Nazwa produktu"
+                                        Binding="{Binding Name}" />-->
+                    
                     <DataGridTextColumn Header="Nazwa sklepu"
                                         Binding="{Binding ShopName}" />
                     <DataGridTextColumn Header="Cena"
@@ -162,7 +171,6 @@
                                         Binding="{Binding Description}" />
                     <DataGridTextColumn Header="Link"
                                         Binding="{Binding ShopLink}" />
-
                 </DataGrid.Columns>
             </DataGrid>
 

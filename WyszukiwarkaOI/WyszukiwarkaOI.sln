@@ -11,7 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WyszukiwarkaOI.WPF", "Wyszu
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Testy", "Testy\Testy.csproj", "{B38F4485-FBDE-4B4E-A411-DD3C159EBA51}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WyszukiwarkaOI.Domain", "WyszukiwarkaOI.Domain\WyszukiwarkaOI.Domain.csproj", "{3CAFB5A1-CBEF-4602-93BB-4C83483B66C0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WyszukiwarkaOI.Domain", "WyszukiwarkaOI.Domain\WyszukiwarkaOI.Domain.csproj", "{3CAFB5A1-CBEF-4602-93BB-4C83483B66C0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "temp", "temp", "{FFDC03FE-12C5-4B9C-975D-AD934B192066}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
