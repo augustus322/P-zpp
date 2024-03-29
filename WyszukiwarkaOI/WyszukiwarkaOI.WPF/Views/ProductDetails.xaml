@@ -1,0 +1,30 @@
+﻿<Window x:Class="WyszukiwarkaOI.WPF.Views.ProductDetails"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WyszukiwarkaOI.WPF.Views"
+        mc:Ignorable="d"
+        Title="ProductDetails" Height="450" Width="800">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="30*"/>
+            <ColumnDefinition Width="50*"/>
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Grid.Column="0">
+            <Image>
+                <Image.Source>
+                    <BitmapImage DecodePixelWidth="200" UriSource="{Binding Path=ProductImage}"></BitmapImage>
+                </Image.Source>
+            </Image>
+            <Button Click="{Binding GoToShop}">Go to shop</Button>
+        </StackPanel>
+
+        <StackPanel Grid.Column="1">
+            <Label Content="{Binding Path=Name}"></Label>
+            <Label Content="{Binding Path=Price}"></Label>
+            <Label Content="{Binding Path=Description}"></Label>
+        </StackPanel>
+    </Grid>
+</Window>
