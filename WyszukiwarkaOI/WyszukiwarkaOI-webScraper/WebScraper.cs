@@ -1,6 +1,7 @@
 ﻿using AngleSharp;
 using AngleSharp.Dom;
 using AngleSharp.Html.Dom;
+using System.Net;
 
 namespace WyszukiwarkaOI_webScraper;
 
@@ -121,7 +122,21 @@ public class WebScraper
 				return (null, false);
 			}
 
-			T elementInfo = ctor(shopLink, productName, price, shopName, productDescription);
+			string imageUrl = product.QuerySelector(".pB__image")?.QuerySelector("img")?.GetAttribute("src") ?? "czemu nie dziala";
+
+
+            //DownloadImage(productName, @"https://www.okazje.info.pl/images/offer/m/8495/298798495-rower-trekkingowy-delta-m-28-touring-nex-7s.jpg");
+            //using (WebClient webClient = new WebClient())
+            //{
+            //    string folderPath = @"C:\Users\HP\source\repos\P-zpp\WyszukiwarkaOI\temp\";
+            //    string path = $"{folderPath}{productName}.jpg";
+            //    webClient.Headers.Add("User-Agent: Other");
+            //    webClient.DownloadFile(new Uri(imageUrl), @"C:\Users\HP\source\repos\P-zpp\WyszukiwarkaOI\temp\" + productName + ".jpg");
+            //    //await webClient.DownloadFileTaskAsync(new Uri(url), path);
+            //}
+
+
+            T elementInfo = ctor(shopLink, productName, price, shopName, productDescription);
 
 			result.Add(elementInfo);
 
@@ -129,6 +144,17 @@ public class WebScraper
 
 		return (result, true);
 	}
+	//public static async Task DownloadImage(string name, string url)
+	//{
+	//	using (WebClient webClient = new WebClient())
+	//	{
+	//		string folderPath = @"C:\Users\HP\source\repos\P-zpp\WyszukiwarkaOI\temp\";
+	//		string path = $"{folderPath}{name}.jpg";
+	//		webClient.Headers.Add("User-Agent: Other");
+	//		webClient.DownloadFileAsync(new Uri(url), @"C:\Users\HP\source\repos\P-zpp\WyszukiwarkaOI\temp\" + name + ".jpg");
+	//		//await webClient.DownloadFileTaskAsync(new Uri(url), path);
+	//	}
+	//}
 
 	public async Task<(int? nextPageNumber, bool isSuccess)> GetNextPageNumberAsync(string html)
 	{
